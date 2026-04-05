@@ -320,7 +320,6 @@ function App() {
           </div>
         </Suspense>
       </section>
-      </section>
 
       <section className="pipeline-section">
         <h2>DevOps for AI Pipeline</h2>
