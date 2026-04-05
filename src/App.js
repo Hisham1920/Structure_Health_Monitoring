@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, Suspense } from "react";
 import { motion } from "framer-motion";
 import {
   Activity,
@@ -33,10 +33,17 @@ import {
 } from "recharts";
 import "./App.css";
 
+const LoadingSpinner = () => (
+  <div style={{ textAlign: "center", padding: "40px", color: "#888" }}>
+    <div style={{ fontSize: "24px", marginBottom: "10px" }}>⏳ Loading...</div>
+    <p>Charts and content loading...</p>
+  </div>
+);
+
 const metrics = [
-  { label: "Dataset Samples", value: "1200", sub: "400 per class" },
-  { label: "TinyML Accuracy", value: "84.6%", sub: "From SHM notebook" },
-  { label: "Severe Recall", value: "96%", sub: "Safety focused" },
+  { label: "Dataset Samples", value: "1200", sub: "Balanced: 400 per class" },
+  { label: "TinyML Accuracy", value: "85%", sub: "Edge model performance" },
+  { label: "Severe Recall", value: "83.3%", sub: "Safety focused" },
   { label: "Deployment Target", value: "ESP32", sub: "Edge device" },
 ];
 
@@ -245,65 +252,74 @@ function App() {
       </section>
 
       <section className="section-grid">
-        <div className="panel">
-          <h3 className="panel-title">Balanced Class Distribution</h3>
-          <div className="chart-box">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie data={classData} dataKey="value" nameKey="name" outerRadius={95} innerRadius={50} />
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
+        <Suspense fallback={<LoadingSpinner />}>
+          <div className="panel">
+            <h3 className="panel-title">Balanced Class Distribution</h3>
+            <div className="chart-box">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie data={classData} dataKey="value" nameKey="name" outerRadius={95} innerRadius={50} />
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
           </div>
-        </div>
+        </Suspense>
 
-        <div className="panel">
-          <h3 className="panel-title">Feature Trend Across Damage States</h3>
-          <div className="chart-box">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={featureTrend}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="state" />
-                <YAxis />
-                <Tooltip />
-                <Bar dataKey="strain" />
-              </BarChart>
-            </ResponsiveContainer>
+        <Suspense fallback={<LoadingSpinner />}>
+          <div className="panel">
+            <h3 className="panel-title">Feature Trend Across Damage States</h3>
+            <div className="chart-box">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={featureTrend}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="state" />
+                  <YAxis />
+                  <Tooltip />
+                  <Bar dataKey="strain" />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
           </div>
-        </div>
+        </Suspense>
       </section>
 
       <section className="section-grid">
-        <div className="panel">
-          <h3 className="panel-title">Training Trend</h3>
-          <div className="chart-box">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={accuracyHistory}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="epoch" />
-                <YAxis domain={[0, 1]} />
-                <Tooltip />
-                <Line type="monotone" dataKey="train" />
-                <Line type="monotone" dataKey="val" />
-              </LineChart>
-            </ResponsiveContainer>
+        <Suspense fallback={<LoadingSpinner />}>
+          <div className="panel">
+            <h3 className="panel-title">Training Trend</h3>
+            <div className="chart-box">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={accuracyHistory}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="epoch" />
+                  <YAxis domain={[0, 1]} />
+                  <Tooltip />
+                  <Line type="monotone" dataKey="train" />
+                  <Line type="monotone" dataKey="val" />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
           </div>
-        </div>
+        </Suspense>
 
-        <div className="panel">
-          <h3 className="panel-title">Feature Importance</h3>
-          <div className="chart-box">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={featureImportance} layout="vertical">
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis type="number" />
-                <YAxis dataKey="name" type="category" width={110} />
-                <Tooltip />
-                <Bar dataKey="value" />
-              </BarChart>
-            </ResponsiveContainer>
+        <Suspense fallback={<LoadingSpinner />}>
+          <div className="panel">
+            <h3 className="panel-title">Feature Importance</h3>
+            <div className="chart-box">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={featureImportance} layout="vertical">
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis type="number" />
+                  <YAxis dataKey="name" type="category" width={110} />
+                  <Tooltip />
+                  <Bar dataKey="value" />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
           </div>
-        </div>
+        </Suspense>
+      </section>
       </section>
 
       <section className="pipeline-section">
@@ -383,15 +399,17 @@ function App() {
           </div>
 
           <div className="chart-box small-chart">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={featureTrend}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="state" />
-                <YAxis />
-                <Tooltip />
-                <Area type="monotone" dataKey="freq" fillOpacity={0.25} />
-              </AreaChart>
-            </ResponsiveContainer>
+            <Suspense fallback={<LoadingSpinner />}>
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={featureTrend}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="state" />
+                  <YAxis />
+                  <Tooltip />
+                  <Area type="monotone" dataKey="freq" fillOpacity={0.25} />
+                </AreaChart>
+              </ResponsiveContainer>
+            </Suspense>
           </div>
         </div>
       </section>
